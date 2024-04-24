@@ -21,10 +21,9 @@ const highPriorityIcon = <svg xmlns="http://www.w3.org/2000/svg" className="h-6 
 //     id: string;
 //     points: number
 // }) => {
-const Card = ({myTask, updateTaskPoints, updateTaskTitle}: {
+const Card = ({myTask, updateTask}: {
   myTask: Task
-  updateTaskPoints: (myTask: Task, points: number) => void
-  updateTaskTitle: (myTask: Task, title: string) => void
+  updateTask: (myTask: Task) => void
 }) => {
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -39,14 +38,14 @@ const Card = ({myTask, updateTaskPoints, updateTaskTitle}: {
     const nextInedex = direction === 'up' ? index + 1 : index - 1;
     const newPoints = fib[nextInedex]
     if(newPoints){
-      updateTaskPoints(myTask, newPoints)
+      updateTask({...myTask, points: newPoints})
     }
 
   }
   return (
     <div className="border rounded-lg px-2 m-2 bg-gray-50 w-60">
       <div className="text-base font-base py-2">
-      {isEditingTitle ? (<input autoFocus className="w-full" onBlur={() => setIsEditingTitle(false)} value={myTask.title} onChange={(e) => updateTaskTitle(myTask, e.target.value)}/>) : (
+      {isEditingTitle ? (<input autoFocus className="w-full" onBlur={() => setIsEditingTitle(false)} value={myTask.title} onChange={(e) => updateTask({...myTask, title: e.target.value})}/>) : (
         <div onClick={() => setIsEditingTitle(true)}>
           {myTask.title}
         </div>

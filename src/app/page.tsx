@@ -15,16 +15,9 @@ export default function Home() {
       }
   })
 
-  const updateTaskPointsFn = (task: Task, points: number) => {
+  const updateTaskFn = (task: Task) => {
     const updatedTasks = tasks.map((t) => {
-      return t.id === task.id ? {...t, points} : t
-    })
-    setTasks(updatedTasks);
-  }
-
-  const updateTaskTitleFn = (task: Task, title: string) => {
-    const updatedTasks = tasks.map((t) => {
-      return t.id === task.id ? {...t, title} : t
+      return t.id === task.id ? task : t
     })
     setTasks(updatedTasks)
   }
@@ -44,7 +37,7 @@ export default function Home() {
             <h1 className=" capitalize">{column.title}</h1>
             </div>
             {column.tasks.reduce((total, task) => total + (task?.points || 0), 0)}
-            {column.tasks.map((task) => (<Card myTask={task} updateTaskPoints={updateTaskPointsFn} updateTaskTitle={updateTaskTitleFn}/>))}
+            {column.tasks.map((task) => (<Card myTask={task} updateTask={updateTaskFn}/>))}
           
         </div>
       ))}
