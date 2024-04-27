@@ -1,12 +1,12 @@
 'use client'
 import Image from "next/image";
 import Card from "@/components/Card";
-import { tasks as initialTasks, Status, statuses, Task } from "../utils/data-types";
-import React, { useState } from "react";
+import { Status, statuses, Task } from "../utils/data-types";
+import React, { useEffect, useState } from "react";
 
 export default function Home() {
 
-  const [tasks, setTasks] = useState<Task[]>(initialTasks)
+  const [tasks, setTasks] = useState<Task[]>([])
 
   const columns =  statuses.map((status) => {
     const taskInColumn = tasks.filter((task) => task.status === status)
@@ -15,7 +15,24 @@ export default function Home() {
       }
   })
 
+  const [currentlyHoveringOver, setCurrentlyHoveringOver] = useState<Status | null>(null)
+
+  useEffect(() => {  
+    fetch('http://localhost:8000/tasks/').then((res) => res.json()).then((data) => {
+        setTasks(data);
+        console.log(data);
+      });
+  }, [currentlyHoveringOver]);
+
+
   const updateTaskFn = (task: Task) => {
+    fetch(`http://localhost:8000/tasks/${task.id}`,{
+      method: 'PUT',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(task)
+    })
     const updatedTasks = tasks.map((t) => {
       return t.id === task.id ? task : t
     })
@@ -32,7 +49,7 @@ export default function Home() {
     }
   }
 
-  const [currentlyHoveringOver, setCurrentlyHoveringOver] = useState<Status | null>(null)
+  
   const handleDragEnter = (status: Status) => {
     setCurrentlyHoveringOver(status);
   }
