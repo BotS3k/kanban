@@ -43,7 +43,9 @@ const Card = ({myTask, updateTask}: {
 
   }
   return (
-    <div className="border rounded-lg px-2 m-2 bg-gray-50 w-60">
+    <div 
+    draggable onDragStart={(e) => {e.dataTransfer.setData("id", myTask.id)}} 
+    className="border rounded-lg px-2 m-2 bg-gray-50 w-60">
       <div className="text-base font-base py-2">
       {isEditingTitle ? (<input autoFocus className="w-full" onBlur={() => setIsEditingTitle(false)} value={myTask.title} onChange={(e) => updateTask({...myTask, title: e.target.value})}/>) : (
         <div onClick={() => setIsEditingTitle(true)}>
