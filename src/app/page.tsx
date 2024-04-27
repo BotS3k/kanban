@@ -11,7 +11,7 @@ export default function Home() {
   const columns =  statuses.map((status) => {
     const taskInColumn = tasks.filter((task) => task.status === status)
       return {
-        title: status, tasks: taskInColumn
+        status, tasks: taskInColumn
       }
   })
 
@@ -23,12 +23,18 @@ export default function Home() {
   }
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, status: Status) => {  
-    e.preventDefault() 
+    e.preventDefault()
+    setCurrentlyHoveringOver(null)
     const id = e.dataTransfer.getData("id")
     const task = tasks.find((task) => task.id === id)
     if(task){
       updateTaskFn({...task, status})
     }
+  }
+
+  const [currentlyHoveringOver, setCurrentlyHoveringOver] = useState<Status | null>(null)
+  const handleDragEnter = (status: Status) => {
+    setCurrentlyHoveringOver(status);
   }
 
   const todoTasks = tasks.filter((task) => task.status === "todo");
@@ -41,14 +47,16 @@ export default function Home() {
     <div className="flex divide-x">
       
       {columns.map((column) => (
-        <div onDrop={(e) => handleDrop(e, column.title)} onDragOver={(e) => e.preventDefault()}>
+        <div onDragEnter={() => handleDragEnter(column.status)} onDrop={(e) => handleDrop(e, column.status)} onDragOver={(e) => e.preventDefault()}>
         <div>
           <div className="flex justify-between text-3xl p-2 font-bold text-gray-600">
-            <h1 className=" capitalize">{column.title}</h1>
-            </div>
+            <h1 className=" capitalize">{column.status}</h1>
             {column.tasks.reduce((total, task) => total + (task?.points || 0), 0)}
+          </div>
+          <div className={`h-full ${currentlyHoveringOver === column.status ? 'bg-gray-200' : ''}`}>
             {column.tasks.map((task) => (<Card myTask={task} updateTask={updateTaskFn}/>))}
           </div>
+        </div>
         </div>
       ))}
     </div>
